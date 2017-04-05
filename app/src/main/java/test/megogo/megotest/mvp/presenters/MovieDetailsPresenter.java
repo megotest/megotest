@@ -8,8 +8,10 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import test.megogo.megotest.MovieApp;
 import test.megogo.megotest.mvp.TmdbService;
+import test.megogo.megotest.mvp.models.Error;
 import test.megogo.megotest.mvp.models.Movie;
 import test.megogo.megotest.mvp.views.MovieDetailsView;
+import test.megogo.megotest.utils.ErrorHelper;
 
 /**
  * Created by JSJEM on 04.04.2017.
@@ -18,12 +20,14 @@ import test.megogo.megotest.mvp.views.MovieDetailsView;
 public class MovieDetailsPresenter extends BasePresenter<MovieDetailsView> {
 
     private final long movieId;
+    private final ErrorHelper errorHelper;
     @Inject
     TmdbService tmdbService;
 
     public MovieDetailsPresenter(final long movieId) {
         super();
         this.movieId = movieId;
+        this.errorHelper = new ErrorHelper();
         MovieApp.getAppComponent().inject(this);
     }
 
@@ -52,7 +56,8 @@ public class MovieDetailsPresenter extends BasePresenter<MovieDetailsView> {
     }
 
     private void onFail(final Throwable error) {
+        Error serviceError = errorHelper.extractError(error);
         getViewState().onLoadingFinished();
-        getViewState().onError(error.getMessage());
+        getViewState().onError(serviceError.getMessage());
     }
 }

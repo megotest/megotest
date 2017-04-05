@@ -10,9 +10,11 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import test.megogo.megotest.MovieApp;
 import test.megogo.megotest.mvp.TmdbService;
+import test.megogo.megotest.mvp.models.Error;
 import test.megogo.megotest.mvp.models.Movie;
 import test.megogo.megotest.mvp.models.TopMovies;
 import test.megogo.megotest.mvp.views.TopMoviesView;
+import test.megogo.megotest.utils.ErrorHelper;
 
 /**
  * Created by JSJEM on 04.04.2017.
@@ -21,6 +23,7 @@ import test.megogo.megotest.mvp.views.TopMoviesView;
 public class TopMoviesPresenter extends BasePresenter<TopMoviesView> {
 
     private final AtomicBoolean isLoading;
+    private final ErrorHelper errorHelper;
     private int nextPage;
     @Inject
     TmdbService tmdbService;
@@ -29,6 +32,7 @@ public class TopMoviesPresenter extends BasePresenter<TopMoviesView> {
         super();
         this.isLoading = new AtomicBoolean();
         this.nextPage = 1;
+        this.errorHelper = new ErrorHelper();
         MovieApp.getAppComponent().inject(this);
     }
 
@@ -69,8 +73,9 @@ public class TopMoviesPresenter extends BasePresenter<TopMoviesView> {
     }
 
     private void onFail(final Throwable error) {
+        Error serviceError = errorHelper.extractError(error);
         getViewState().onLoadingFinished();
-        getViewState().onError(error.getMessage());
+        getViewState().onError(serviceError.getMessage());
         isLoading.set(false);
     }
 

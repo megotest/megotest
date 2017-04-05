@@ -10,6 +10,7 @@ import test.megogo.megotest.modules.TmdbModule;
 import test.megogo.megotest.mvp.TmdbService;
 import test.megogo.megotest.mvp.presenters.MovieDetailsPresenter;
 import test.megogo.megotest.mvp.presenters.TopMoviesPresenter;
+import test.megogo.megotest.utils.ErrorHelper;
 
 /**
  * Created by JSJEM on 04.04.2017.
@@ -25,4 +26,6 @@ public interface AppComponent {
     void inject(final TopMoviesPresenter topMoviesPresenter);
 
     void inject(final MovieDetailsPresenter movieDetailsPresenter);
+
+    void inject(final ErrorHelper errorHelper);
 }

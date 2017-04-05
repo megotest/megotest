@@ -120,7 +120,7 @@ public class TopMoviesFragment extends MvpAppCompatFragment implements TopMovies
     public void onError(String errorDescription) {
         if(isResumed()) {
             Snackbar snackbar = ErrorHelper
-                    .createErrorSnackbar(getActivity(), errorDescription, true);
+                    .createErrorSnackbar(getActivity(), errorDescription);
             snackbar.setAction(R.string.error_button_retry, (view) -> topMoviesPresenter.loadItems());
             snackbar.show();
         }

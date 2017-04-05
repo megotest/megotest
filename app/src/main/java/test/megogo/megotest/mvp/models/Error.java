@@ -11,7 +11,7 @@ public class Error {
     @SerializedName("status_code")
     private int statusCode;
     @SerializedName("status_message")
-    private int message;
+    private String message;
 
     public int getStatusCode() {
         return statusCode;
@@ -21,11 +21,11 @@ public class Error {
         this.statusCode = statusCode;
     }
 
-    public int getMessage() {
+    public String getMessage() {
         return message;
     }
 
-    public void setMessage(int message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 }

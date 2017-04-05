@@ -126,7 +126,7 @@ public class MovieDetailsFragment extends MvpAppCompatFragment implements MovieD
     public void onError(String errorDescription) {
         if(isResumed()) {
             Snackbar snackbar = ErrorHelper
-                    .createErrorSnackbar(getActivity(), errorDescription, true);
+                    .createErrorSnackbar(getActivity(), errorDescription);
             snackbar.setAction(R.string.error_button_retry, (view) ->
                     movieDetailsPresenter.loadMovieDescription());
             snackbar.show();
