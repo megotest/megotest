@@ -1,0 +1,11 @@
+<resources>
+    <string name="tmdb_api_key">75535f68dfa5dc966f1b2a7cd0f516de</string>
+
+    <string name="app_name">Megotest</string>
+
+    <string name="fragment_top_movies_title">Movies</string>
+    <string name="fragment_movie_details_title">Movie Details</string>
+
+    <string name="error_button_cancel">Cancel</string>
+    <string name="error_button_retry">Retry</string>
+</resources>

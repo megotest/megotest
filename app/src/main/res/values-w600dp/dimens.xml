@@ -1,0 +1,3 @@
+<resources>
+    <dimen name="movie_poster_default_size">320dp</dimen>
+</resources>
