@@ -47,12 +47,6 @@ public class TopMoviesFragment extends MvpAppCompatFragment implements TopMovies
     private MoviesAdapter adapter;
     private boolean mayLoadMore;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        adapter = new MoviesAdapter();
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,6 +57,7 @@ public class TopMoviesFragment extends MvpAppCompatFragment implements TopMovies
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        adapter = new MoviesAdapter();
         int spanCount = view.getResources().getInteger(R.integer.movie_grid_spans);
         moviesRecycler.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         moviesRecycler.setAdapter(adapter);
