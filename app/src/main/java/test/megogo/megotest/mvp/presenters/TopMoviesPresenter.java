@@ -76,10 +76,14 @@ public class TopMoviesPresenter extends BasePresenter<TopMoviesView> {
         Error serviceError = errorHelper.extractError(error);
         getViewState().onLoadingFinished();
         getViewState().onError(serviceError.getMessage());
-        isLoading.set(false);
     }
 
     public void selectMovie(final int position, final Movie movie) {
         getViewState().showDetails(position, movie);
+    }
+
+
+    public void errorProcessed() {
+        isLoading.set(false);
     }
 }

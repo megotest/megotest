@@ -13,4 +13,5 @@ public interface BaseView extends MvpView {
     void onLoadingFinished();
 
     void onError(final String errorDescription);
+
 }

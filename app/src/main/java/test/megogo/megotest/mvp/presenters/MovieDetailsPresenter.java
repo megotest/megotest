@@ -2,6 +2,8 @@ package test.megogo.megotest.mvp.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -21,6 +23,7 @@ public class MovieDetailsPresenter extends BasePresenter<MovieDetailsView> {
 
     private final long movieId;
     private final ErrorHelper errorHelper;
+    private final AtomicBoolean isLoading;
     @Inject
     TmdbService tmdbService;
 
@@ -28,6 +31,7 @@ public class MovieDetailsPresenter extends BasePresenter<MovieDetailsView> {
         super();
         this.movieId = movieId;
         this.errorHelper = new ErrorHelper();
+        this.isLoading = new AtomicBoolean();
         MovieApp.getAppComponent().inject(this);
     }
 
@@ -38,26 +42,33 @@ public class MovieDetailsPresenter extends BasePresenter<MovieDetailsView> {
     }
 
     public void loadMovieDescription() {
-        getViewState().onStartLoading();
-        Subscription subscription = tmdbService.getMovieDetails(movieId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(movieDesc -> {
-                            onSuccess(movieDesc);
-                        },
-                        error -> {
-                            onFail(error);
-                        });
-        unsubscribeOnDestroy(subscription);
+        if(isLoading.compareAndSet(false, true)) {
+            getViewState().onStartLoading();
+            Subscription subscription = tmdbService.getMovieDetails(movieId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(movieDesc -> {
+                                onSuccess(movieDesc);
+                            },
+                            error -> {
+                                onFail(error);
+                            });
+            unsubscribeOnDestroy(subscription);
+        }
     }
 
     private void onSuccess(final Movie movieDescription) {
         getViewState().onLoadingFinished();
         getViewState().showMovieDescription(movieDescription);
+        isLoading.set(false);
     }
 
     private void onFail(final Throwable error) {
         Error serviceError = errorHelper.extractError(error);
         getViewState().onLoadingFinished();
         getViewState().onError(serviceError.getMessage());
+    }
+
+    public void errorProcessed() {
+        isLoading.set(false);
     }
 }

@@ -54,6 +54,7 @@ public class MovieDetailsFragment extends MvpAppCompatFragment implements MovieD
     TextView movieDescription;
 
     private SimpleDateFormat dateFormat;
+    private Snackbar errorSnackbar;
 
     public static MovieDetailsFragment createInstance(final Movie movie) {
         MovieDetailsFragment detailsFragment = new MovieDetailsFragment();
@@ -85,6 +86,21 @@ public class MovieDetailsFragment extends MvpAppCompatFragment implements MovieD
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.fragment_movie_details_title);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideError();
+    }
+
+    private void hideError() {
+        if (isRemoving()) {
+            movieDetailsPresenter.errorProcessed();
+            if (errorSnackbar != null) {
+                errorSnackbar.dismiss();
+            }
+        }
     }
 
     @Override
@@ -124,12 +140,19 @@ public class MovieDetailsFragment extends MvpAppCompatFragment implements MovieD
 
     @Override
     public void onError(String errorDescription) {
-        if(isResumed()) {
-            Snackbar snackbar = ErrorHelper
+        if (isResumed()) {
+            errorSnackbar = ErrorHelper
                     .createErrorSnackbar(getActivity(), errorDescription);
-            snackbar.setAction(R.string.error_button_retry, (view) ->
-                    movieDetailsPresenter.loadMovieDescription());
-            snackbar.show();
+            errorSnackbar.setAction(R.string.error_button_retry, (view) -> {
+                movieDetailsPresenter.errorProcessed();
+                movieDetailsPresenter.loadMovieDescription();
+                errorSnackbar = null;
+            });
+            errorSnackbar.show();
+        } else {
+            movieDetailsPresenter.errorProcessed();
         }
+
     }
+
 }

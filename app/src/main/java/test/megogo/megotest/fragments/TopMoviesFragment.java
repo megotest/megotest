@@ -46,6 +46,7 @@ public class TopMoviesFragment extends MvpAppCompatFragment implements TopMovies
 
     private MoviesAdapter adapter;
     private boolean mayLoadMore;
+    private Snackbar errorSnackbar;
 
     @Nullable
     @Override
@@ -77,6 +78,22 @@ public class TopMoviesFragment extends MvpAppCompatFragment implements TopMovies
         super.onPause();
         adapter.setScrollListener(null);
         adapter.setMovieClickListener(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideError();
+    }
+
+
+    private void hideError() {
+        if (isRemoving()) {
+            topMoviesPresenter.errorProcessed();
+            if (errorSnackbar != null) {
+                errorSnackbar.dismiss();
+            }
+        }
     }
 
     @Override
@@ -114,10 +131,16 @@ public class TopMoviesFragment extends MvpAppCompatFragment implements TopMovies
     @Override
     public void onError(String errorDescription) {
         if(isResumed()) {
-            Snackbar snackbar = ErrorHelper
+            errorSnackbar = ErrorHelper
                     .createErrorSnackbar(getActivity(), errorDescription);
-            snackbar.setAction(R.string.error_button_retry, (view) -> topMoviesPresenter.loadItems());
-            snackbar.show();
+            errorSnackbar.setAction(R.string.error_button_retry, (view) -> {
+                topMoviesPresenter.errorProcessed();
+                topMoviesPresenter.loadItems();
+                errorSnackbar = null;
+            });
+            errorSnackbar.show();
+        } else {
+            topMoviesPresenter.errorProcessed();
         }
     }
 
